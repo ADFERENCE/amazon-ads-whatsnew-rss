@@ -1,7 +1,7 @@
 const RSS = require('rss');
 
 module.exports = async (req, res) => {
-  const locale = req.query.locale || 'de-de';
+  const locale = req.query.locale || 'en-US';
   const apiUrl = `https://advertising.amazon.com/a20m-api/v1/pages?subpageType=Whats%20new&locale=${locale}`;
 
   try {
