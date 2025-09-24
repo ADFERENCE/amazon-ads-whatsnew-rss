@@ -1,0 +1,16 @@
+{
+  "name": "amazon-ads-whatsnew-rss",
+  "version": "1.0.0",
+  "description": "Converts Amazon Advertising What's New API to RSS format",
+  "main": "api/rss.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel"
+  },
+  "dependencies": {
+    "rss": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
