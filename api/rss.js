@@ -24,7 +24,14 @@ module.exports = async (req, res) => {
     });
 
     if (Array.isArray(data)) {
-      data.forEach(item => {
+      const items = data.filter(item => {
+        // Filter out the landing page itself (not a real news item)
+        if (!item.url) return false;
+        const path = item.url.replace(/^\/advertising\.amazon\.com/, '');
+        return path !== '/resources/whats-new/' && path !== '/resources/whats-new';
+      });
+
+      items.forEach(item => {
         const marketplaces = item.relatedMarketplaces ?
           item.relatedMarketplaces.filter(m => !m.startsWith('sKey-')).join(', ') : '';
         const products = item.relatedProducts ?
@@ -40,12 +47,16 @@ module.exports = async (req, res) => {
           descriptionHtml += `<p><strong>Products:</strong> ${products}</p>`;
         }
 
+        // API URLs changed from "/resources/..." to "/advertising.amazon.com/resources/..."
+        const itemPath = item.url.replace(/^\/advertising\.amazon\.com/, '');
+        const itemUrl = `https://advertising.amazon.com${itemPath}`;
+
         feed.item({
           title: item.title || 'Untitled',
           description: descriptionHtml,
-          url: item.url ? `https://advertising.amazon.com${item.url}` : 'https://advertising.amazon.com',
+          url: itemUrl,
           date: item.publishDateTimestamp || item.publishDate || new Date().toISOString(),
-          guid: item.url || item.title
+          guid: itemPath || item.title
         });
       });
     }
