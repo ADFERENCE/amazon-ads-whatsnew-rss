@@ -25,13 +25,15 @@ module.exports = async (req, res) => {
 
     if (Array.isArray(data)) {
       const items = data.filter(item => {
-        // Filter out the landing page itself (not a real news item)
+        // Filter out the landing page and items without dates
         if (!item.url) return false;
+        if (!item.publishDateTimestamp && !item.publishDate) return false;
         const path = item.url.replace(/^\/advertising\.amazon\.com/, '');
         return path !== '/resources/whats-new/' && path !== '/resources/whats-new';
       });
 
-      items.forEach(item => {
+      // Limit to most recent 50 items
+      items.slice(0, 50).forEach(item => {
         const marketplaces = item.relatedMarketplaces ?
           item.relatedMarketplaces.filter(m => !m.startsWith('sKey-')).join(', ') : '';
         const products = item.relatedProducts ?
@@ -55,7 +57,7 @@ module.exports = async (req, res) => {
           title: item.title || 'Untitled',
           description: descriptionHtml,
           url: itemUrl,
-          date: item.publishDateTimestamp || item.publishDate || new Date().toISOString(),
+          date: item.publishDateTimestamp || item.publishDate,
           guid: item.url || item.title
         });
       });
