@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
           description: descriptionHtml,
           url: itemUrl,
           date: item.publishDateTimestamp || item.publishDate || new Date().toISOString(),
-          guid: itemPath || item.title
+          guid: item.url || item.title
         });
       });
     }
